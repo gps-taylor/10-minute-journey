@@ -7,6 +7,11 @@
   --paper:#fbf9f5; --paper-warm:#f4efe7; --line:#e7e0d6;
   --c-blue:#7fb4d4; --c-green:#9ecf8f; --c-yellow:#f4d97a; --c-orange:#f0a86b; --c-rose:#e89aa8; --c-violet:#b79ccf;
   --maxw:1180px;
+  /* vertical rhythm scale — consistent section spacing across breakpoints */
+  --space-section:clamp(72px,11vw,150px);
+  --space-section-lg:clamp(88px,13vw,180px);
+  --space-block:clamp(40px,7vw,72px);
+  --space-stack:clamp(24px,5vw,40px);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -61,8 +66,8 @@ nav.scrolled,nav.solid{background:rgba(251,249,245,.82); backdrop-filter:blur(18
 
 /* ---------- layout helpers ---------- */
 section{position:relative}
-.wrap{max-width:var(--maxw); margin:0 auto; padding:0 clamp(24px,6vw,64px)}
-.band{padding:clamp(90px,13vw,170px) 0}
+.wrap{max-width:var(--maxw); margin:0 auto; padding-left:clamp(24px,6vw,64px); padding-right:clamp(24px,6vw,64px)}
+.band{padding:var(--space-section) 0}
 .sec-eyebrow{font-size:12.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:20px; display:flex; align-items:center; gap:14px}
 .sec-eyebrow::before{content:''; width:30px; height:1px; background:var(--ink-faint)}
 .accent{
@@ -106,13 +111,13 @@ section{position:relative}
 @keyframes rise{to{opacity:1; transform:translateY(0)}}
 
 /* ---------- statement ---------- */
-.statement{text-align:center; padding:clamp(100px,15vw,200px) 0}
+.statement{text-align:center; padding:var(--space-section-lg) 0}
 .statement h2{font-size:clamp(28px,4.6vw,56px); font-weight:300; line-height:1.18; max-width:900px; margin:0 auto; letter-spacing:-.02em}
 .statement h2 em{font-style:italic}
 .statement .accent{font-style:italic}
 
 /* ---------- pillars ---------- */
-.pillars{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(28px,4vw,64px); margin-top:64px}
+.pillars{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(28px,4vw,64px); margin-top:var(--space-block)}
 .pillar .num{font-family:'Fraunces',serif; font-size:15px; color:var(--ink-faint); margin-bottom:18px; letter-spacing:.05em}
 .pillar h3{font-size:25px; margin-bottom:12px; font-weight:400}
 .pillar p{color:var(--ink-soft); font-size:15.5px; font-weight:300}
@@ -166,7 +171,7 @@ section{position:relative}
 .research .cite{font-size:13px; color:var(--ink-faint); font-weight:300; line-height:1.6}
 
 /* ---------- quote ---------- */
-.quote{text-align:center; padding:clamp(90px,13vw,170px) 0}
+.quote{text-align:center; padding:var(--space-section) 0}
 .quote blockquote{font-family:'Fraunces',serif; font-size:clamp(22px,3.3vw,38px); font-weight:300; line-height:1.34; max-width:920px; margin:0 auto 28px; letter-spacing:-.015em; font-style:italic}
 .quote cite{font-style:normal; font-size:14px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-faint)}
 
@@ -276,6 +281,11 @@ footer.wrap{padding:72px clamp(24px,6vw,64px) 44px; border-top:1px solid var(--l
   nav{z-index:102}
   .brand{z-index:103; position:relative}
   .pillars,.flow,.research,.video-grid{grid-template-columns:1fr}
+  .pillars{gap:var(--space-stack)}
+  .pillar{padding-top:var(--space-stack); border-top:1px solid var(--line)}
+  .pillar:first-child{padding-top:0; border-top:none}
+  .feature{gap:var(--space-stack)}
+  .research{gap:var(--space-stack)}
   .research-stats{grid-template-columns:repeat(3,1fr); gap:14px}
   .feature,.feature.flip,.book{grid-template-columns:1fr}
   .feature.flip .feature-img{order:-1}
@@ -306,7 +316,7 @@ footer.wrap{padding:72px clamp(24px,6vw,64px) 44px; border-top:1px solid var(--l
   .inline-link{display:inline-block; padding:4px 0}
 }
 @media(max-width:540px){
-  .wrap{padding:0 24px}
+  .wrap{padding-left:24px; padding-right:24px}
   footer.wrap{margin-top:56px; padding-top:48px}
   .sec-eyebrow,.eyebrow{font-size:12px; letter-spacing:.22em}
   .form-note{font-size:13px}
