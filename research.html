@@ -49,8 +49,14 @@ nav.scrolled,nav.solid{background:rgba(251,249,245,.82); backdrop-filter:blur(18
 .navlinks a:not(.nav-cta):hover::after,.navlinks a.active::after{width:100%}
 .nav-cta{padding:9px 20px; border:1px solid var(--ink); border-radius:100px; color:var(--ink)!important; font-weight:500; transition:all .35s}
 .nav-cta:hover{background:var(--ink); color:var(--paper)!important}
-.burger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none}
-.burger span{width:24px; height:2px; background:var(--ink); transition:.3s}
+.burger{display:none; flex-direction:column; justify-content:center; align-items:center; gap:5px; cursor:pointer; background:none; border:none; width:44px; height:44px; margin:-4px -10px -4px 0; -webkit-tap-highlight-color:transparent}
+.burger span{width:24px; height:2px; background:var(--ink); border-radius:2px; transition:transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-scrim{position:fixed; inset:0; z-index:99; background:rgba(42,38,34,.32); backdrop-filter:blur(3px); opacity:0; visibility:hidden; transition:opacity .45s ease, visibility .45s ease}
+.nav-scrim.open{opacity:1; visibility:visible}
+
 
 /* ---------- buttons ---------- */
 .btn{
@@ -184,7 +190,7 @@ section{position:relative}
 .eform{display:flex; flex-direction:column; gap:12px; max-width:440px; margin:0 auto; position:relative; z-index:2}
 .eform .row{display:flex; gap:12px}
 .eform .row input{flex:1}
-.eform input{width:100%; padding:15px 22px; border-radius:100px; border:1px solid var(--line); background:var(--paper); font-family:inherit; font-size:15px; color:var(--ink); transition:border-color .3s}
+.eform input{width:100%; padding:15px 22px; border-radius:100px; border:1px solid var(--line); background:var(--paper); font-family:inherit; font-size:16px; color:var(--ink); transition:border-color .3s}
 .eform input:focus{outline:none; border-color:var(--ink)}
 .eform .btn{width:100%; margin-top:4px}
 .form-note{font-size:12.5px; color:var(--ink-faint); margin-top:6px}
@@ -259,8 +265,13 @@ footer{padding:70px 0 44px; border-top:1px solid var(--line); margin-top:clamp(6
 
 /* ---------- responsive ---------- */
 @media(max-width:860px){
-  .navlinks{position:fixed; inset:0 0 0 auto; width:78%; max-width:340px; background:var(--paper); flex-direction:column; justify-content:center; gap:30px; transform:translateX(100%); transition:transform .5s cubic-bezier(.2,.8,.2,1); box-shadow:-20px 0 60px -20px rgba(0,0,0,.25)}
+  .navlinks{position:fixed; inset:0 0 0 auto; width:80%; max-width:360px; background:var(--paper); flex-direction:column; justify-content:center; align-items:stretch; gap:4px; padding:90px 28px 40px; transform:translateX(100%); transition:transform .5s cubic-bezier(.2,.8,.2,1); box-shadow:-20px 0 60px -20px rgba(0,0,0,.25); overflow-y:auto}
   .navlinks.open{transform:none}
+  .navlinks a{font-size:19px; padding:15px 8px; min-height:52px; display:flex; align-items:center; -webkit-tap-highlight-color:transparent}
+  .navlinks a:not(.nav-cta)::after{display:none}
+  .navlinks a:not(.nav-cta){border-bottom:1px solid var(--line)}
+  .navlinks a.active{color:var(--ink); font-weight:500}
+  .navlinks .nav-cta{margin-top:22px; justify-content:center; padding:16px 20px; font-size:16px; border-radius:100px; min-height:54px}
   .burger{display:flex; z-index:101}
   .pillars,.flow,.research,.video-grid{grid-template-columns:1fr}
   .research-stats{grid-template-columns:repeat(3,1fr); gap:14px}
@@ -273,9 +284,15 @@ footer{padding:70px 0 44px; border-top:1px solid var(--line); margin-top:clamp(6
   .ref{grid-template-columns:1fr; gap:8px}
   .detail-block{grid-template-columns:1fr; gap:10px}
   .detail-block .marker{font-size:60px}
+  .foot-links{gap:6px 26px}
+  .foot-links a{padding:8px 0; min-height:40px; display:flex; align-items:center}
+  .inline-link{display:inline-block; padding:4px 0}
 }
 @media(max-width:540px){
   .wrap{padding:0 24px}
+  .sec-eyebrow,.eyebrow{font-size:12px; letter-spacing:.22em}
+  .form-note{font-size:13px}
+  .stat p,.pillar p,.step p{font-size:15px}
   .research-stats{grid-template-columns:1fr}
   .video-grid{grid-template-columns:1fr}
   .hero-cta{flex-direction:column; width:100%; max-width:300px; margin:0 auto}
@@ -452,10 +469,28 @@ async function submitEmail({ first, last, email, source }) {
   const burger = document.getElementById("burger");
   const links = document.getElementById("navlinks");
   if (burger && links) {
-    burger.addEventListener("click", () => links.classList.toggle("open"));
-    links.querySelectorAll("a").forEach(a =>
-      a.addEventListener("click", () => links.classList.remove("open"))
-    );
+    // scrim behind the panel
+    let scrim = document.querySelector(".nav-scrim");
+    if (!scrim) {
+      scrim = document.createElement("div");
+      scrim.className = "nav-scrim";
+      document.body.appendChild(scrim);
+    }
+    const setMenu = (open) => {
+      links.classList.toggle("open", open);
+      burger.classList.toggle("open", open);
+      scrim.classList.toggle("open", open);
+      burger.setAttribute("aria-expanded", open ? "true" : "false");
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+    burger.setAttribute("aria-label", "Menu");
+    burger.setAttribute("aria-expanded", "false");
+    burger.addEventListener("click", () => setMenu(!links.classList.contains("open")));
+    scrim.addEventListener("click", () => setMenu(false));
+    links.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+    addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+    // close menu if resized up to desktop
+    addEventListener("resize", () => { if (window.innerWidth > 860) setMenu(false); });
   }
 })();
 

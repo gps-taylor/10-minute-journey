@@ -45,10 +45,28 @@ async function submitEmail({ first, last, email, source }) {
   const burger = document.getElementById("burger");
   const links = document.getElementById("navlinks");
   if (burger && links) {
-    burger.addEventListener("click", () => links.classList.toggle("open"));
-    links.querySelectorAll("a").forEach(a =>
-      a.addEventListener("click", () => links.classList.remove("open"))
-    );
+    // scrim behind the panel
+    let scrim = document.querySelector(".nav-scrim");
+    if (!scrim) {
+      scrim = document.createElement("div");
+      scrim.className = "nav-scrim";
+      document.body.appendChild(scrim);
+    }
+    const setMenu = (open) => {
+      links.classList.toggle("open", open);
+      burger.classList.toggle("open", open);
+      scrim.classList.toggle("open", open);
+      burger.setAttribute("aria-expanded", open ? "true" : "false");
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+    burger.setAttribute("aria-label", "Menu");
+    burger.setAttribute("aria-expanded", "false");
+    burger.addEventListener("click", () => setMenu(!links.classList.contains("open")));
+    scrim.addEventListener("click", () => setMenu(false));
+    links.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+    addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+    // close menu if resized up to desktop
+    addEventListener("resize", () => { if (window.innerWidth > 860) setMenu(false); });
   }
 })();
 
