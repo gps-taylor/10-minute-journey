@@ -457,7 +457,7 @@ footer.wrap{padding:72px clamp(24px,6vw,64px) 44px; border-top:1px solid var(--l
         <div class="check"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3>Your workbook is ready.</h3>
         <p>Thank you for joining the journey. Your download is one tap away.</p>
-        <a class="dl-link btn btn-primary" href="workbook.pdf" download>Download the workbook (PDF)</a>
+        <a class="dl-link btn btn-primary" href="The_10_Minute_Journey_to_You_Workbook.pdf" download>Download the workbook (PDF)</a>
       </div>
     </div>
   </div>
@@ -503,7 +503,7 @@ footer.wrap{padding:72px clamp(24px,6vw,64px) 44px; border-top:1px solid var(--l
         <div class="check"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3>Your workbook is ready.</h3>
         <p>Thank you for joining. Your download is one tap away.</p>
-        <a class="dl-link btn btn-primary" href="workbook.pdf" download>Download the workbook (PDF)</a>
+        <a class="dl-link btn btn-primary" href="The_10_Minute_Journey_to_You_Workbook.pdf" download>Download the workbook (PDF)</a>
       </div>
     </div>
   </div>
@@ -519,7 +519,7 @@ footer.wrap{padding:72px clamp(24px,6vw,64px) 44px; border-top:1px solid var(--l
    ========================================================================= */
 
 /* ---- CONFIG: edit these two values ---- */
-const WORKBOOK_PDF_URL = "workbook.pdf";   // drop your PDF in the site root with this name
+const WORKBOOK_PDF_URL = "The_10_Minute_Journey_to_You_Workbook.pdf";   // drop your PDF in the site root with this name
 const POPUP_DELAY_MS    = 8000;            // popup appears after 8 seconds
 const POPUP_COOLDOWN_DAYS = 7;             // don't re-show for this many days after close/submit
 
@@ -528,21 +528,17 @@ const POPUP_COOLDOWN_DAYS = 7;             // don't re-show for this many days a
    Resolve on success, reject on failure. Right now it just simulates a
    network call so the UI is fully functional for testing. */
 async function submitEmail({ first, last, email, source }) {
-  // ---------------------------------------------------------------------
-  // EXAMPLE — Formspree (uncomment and set your endpoint):
-  //
-  // const res = await fetch("https://formspree.io/f/YOUR_ID", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json", "Accept": "application/json" },
-  //   body: JSON.stringify({ first, last, email, source })
-  // });
-  // if (!res.ok) throw new Error("Submission failed");
-  // return true;
-  // ---------------------------------------------------------------------
-
-  // Placeholder so the UI works before wiring a backend:
-  console.log("[submitEmail] captured:", { first, last, email, source });
-  await new Promise(r => setTimeout(r, 800));
+  const res = await fetch("https://formspree.io/f/xkolbabj", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({
+      email: email,
+      name: [first, last].filter(Boolean).join(" "),
+      source: source,
+      _subject: "New signup — The 10 Minute Journey to You (" + (source || "site") + ")"
+    })
+  });
+  if (!res.ok) throw new Error("Submission failed");
   return true;
 }
 
